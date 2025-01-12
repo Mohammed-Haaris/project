@@ -1,6 +1,6 @@
 /** @format */
-import brand from "../assests/circle2.png";
-import brand1 from "../assests/haaris (1).jpg";
+import brand from "../assets/circle2.png";
+import brand1 from "../assets/haaris (1).jpg";
 import Fade from "react-reveal/Fade";
 import "./Content.css";
 import { useNavigate } from "react-router-dom";

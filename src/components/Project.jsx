@@ -1,8 +1,8 @@
 /** @format */
-import { Fade } from "react-reveal";
+import Fade from "react-reveal";
 import React from "react";
 import "./Project.css";
-import projectImage from "../assests/Project.jpg";
+import projectImage from "../assets/Project.jpg";
 
 function Project() {
   const projects = [

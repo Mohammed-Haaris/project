@@ -2,11 +2,11 @@
 
 import { Fade } from "react-reveal";
 import React from "react";
-import logo6 from "../assests/1e6d2c1a-1ff5-4480-8acd-e48cedf0d29a.webp";
-import logo7 from "../assests/icons8-express-js-300.png";
-import logo8 from "../assests/mongodb.jpg";
-import logo9 from "../assests/vecteezy_php-programming-icon_48332166.png";
-import logo10 from "../assests/mysql.webp";
+import logo6 from "../assets/1e6d2c1a-1ff5-4480-8acd-e48cedf0d29a.webp";
+import logo7 from "../assets/icons8-express-js-300.png";
+import logo8 from "../assets/mongodb.jpg";
+import logo9 from "../assets/vecteezy_php-programming-icon_48332166.png";
+import logo10 from "../assets/mysql.webp";
 
 const BackCard = () => {
   const backEnd = [

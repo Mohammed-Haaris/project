@@ -1,8 +1,8 @@
 /** @format */
-import careerimg from "../assests/program learning class.avif";
+import careerimg from "../assets/program learning class.avif";
 import React, { useState } from "react";
 import emailjs from "emailjs-com";
-import { Fade } from "react-reveal";
+import Fade from "react-reveal";
 import "./Contact.css";
 
 const Contact = () => {

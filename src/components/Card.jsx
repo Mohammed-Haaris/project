@@ -1,10 +1,10 @@
 /** @format */
 import Fade from "react-reveal/Fade";
-import logo1 from "../assests/html.png";
-import logo2 from "../assests/css.png";
-import logo3 from "../assests/javascript.png";
-import logo4 from "../assests/bootstrap-framework.png";
-import logo5 from "../assests/react.png";
+import logo1 from "../assets/html.png";
+import logo2 from "../assets/css.png";
+import logo3 from "../assets/javascript.png";
+import logo4 from "../assets/bootstrap-framework.png";
+import logo5 from "../assets/react.png";
 
 const Card = () => {
   const technologies = [

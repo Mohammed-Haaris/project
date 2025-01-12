@@ -2,8 +2,8 @@
 
 import React from "react";
 import Fade from "react-reveal/Fade";
-import banner from "../assests/Gray White Minimalist Personal Profile Linkedin Banner.png";
-import ContactImage from "../assests/academy class.avif";
+import banner from "../assets/Gray White Minimalist Personal Profile Linkedin Banner.png";
+import ContactImage from "../assets/academy class.avif";
 
 function Career() {
   return (
