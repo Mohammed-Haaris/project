@@ -1,5 +1,5 @@
 /** @format */
-import Fade from "react-reveal/Fade";
+import Fade from "react-awesome-reveal";
 import logo1 from "../assets/html.png";
 import logo2 from "../assets/css.png";
 import logo3 from "../assets/javascript.png";

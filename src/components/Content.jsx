@@ -1,7 +1,7 @@
 /** @format */
 import brand from "../assets/circle2.png";
 import brand1 from "../assets/haaris (1).jpg";
-import Fade from "react-reveal/Fade";
+import Fade from "react-awesome-reveal";
 import "./Content.css";
 import { useNavigate } from "react-router-dom";
 
@@ -43,11 +43,10 @@ function Content() {
               </div>
             </Fade>
           </div>
-          <Fade left>
-            <div className="col-12 col-lg-6 col-md-6">
-              <img src={brand} className="img-fluid" alt="image by freepik" />
-            </div>
-          </Fade>
+
+          <div className="col-12 col-lg-6 col-md-6">
+            <img src={brand} className="img-fluid" alt="image by freepik" />
+          </div>
         </div>
       </div>
       <div className="container-fluid port">

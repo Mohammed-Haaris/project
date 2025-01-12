@@ -1,6 +1,6 @@
 /** @format */
 
-import { Fade } from "react-reveal";
+import { Fade } from "react-awesome-reveal";
 import React from "react";
 import logo6 from "../assets/1e6d2c1a-1ff5-4480-8acd-e48cedf0d29a.webp";
 import logo7 from "../assets/icons8-express-js-300.png";

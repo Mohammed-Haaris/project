@@ -1,5 +1,5 @@
 /** @format */
-import Fade from "react-reveal";
+import Fade from "react-awesome-reveal";
 import React from "react";
 import "./Project.css";
 import projectImage from "../assets/Project.jpg";
@@ -92,41 +92,37 @@ function Project() {
 
       <div className="container projectCard">
         <div className="row">
-          <Fade right>
+          <Fade bottom>
             <h1 className="header1 mb-4">
               Here is my Proof to that i'm a passionate developer with learning
               mindset
             </h1>
           </Fade>
-          <Fade bottom>
-            {projects.map((project, index) => (
-              <div className="col-md-6 col-lg-4 mt-5" key={index}>
-                <div className="card bg-dark" style={{ width: "18rem" }}>
-                  <img
-                    src={project.image}
-                    className="card-img-top"
-                    alt={project.projectName}
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title text-white h2">
-                      {project.projectName}
-                    </h5>
-                    <p className="card-text text-white">
-                      {project.description}
-                    </p>
-                    <a
-                      href={project.link}
-                      className="btn btn-primary"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View Project
-                    </a>
-                  </div>
+          {projects.map((project, index) => (
+            <div className="col-md-6 col-lg-4 mt-5" key={index}>
+              <div className="card bg-dark" style={{ width: "18rem" }}>
+                <img
+                  src={project.image}
+                  className="card-img-top"
+                  alt={project.projectName}
+                />
+                <div className="card-body">
+                  <h5 className="card-title text-white h2">
+                    {project.projectName}
+                  </h5>
+                  <p className="card-text text-white">{project.description}</p>
+                  <a
+                    href={project.link}
+                    className="btn btn-primary"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Project
+                  </a>
                 </div>
               </div>
-            ))}
-          </Fade>
+            </div>
+          ))}
         </div>
       </div>
     </>

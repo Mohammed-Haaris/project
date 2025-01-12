@@ -1,6 +1,6 @@
 /** @format */
 import "../App.css";
-import { Fade } from "react-reveal";
+import { Fade } from "react-awesome-reveal";
 import Card from "./Card";
 import BackCard from "./BackCard";
 

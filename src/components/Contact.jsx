@@ -2,7 +2,7 @@
 import careerimg from "../assets/program learning class.avif";
 import React, { useState } from "react";
 import emailjs from "emailjs-com";
-import Fade from "react-reveal";
+import { Fade } from 'react-awesome-reveal';
 import "./Contact.css";
 
 const Contact = () => {
