@@ -1,0 +1,17 @@
+/** @format */
+
+.projectCard {
+  margin-top: 150px;
+}
+
+@media (max-width: 480px) {
+  .projectCard {
+    margin-top: 60px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .projectCard {
+    margin-top: 100px;
+  }
+}

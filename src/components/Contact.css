@@ -1,0 +1,7 @@
+/** @format */
+
+@media (min-width: 767px) and (max-width: 800px) {
+  .careerimage {
+    display: none;
+  }
+}

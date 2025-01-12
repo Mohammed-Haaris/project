@@ -1,0 +1,86 @@
+/** @format */
+
+.header3 {
+  color: darkgrey;
+  font-size: xx-large;
+}
+@media (max-width: 480px) {
+  .header3 {
+    font-size: 3vh;
+  }
+}
+
+.header1 {
+  font-size: 60px;
+  font-family: poppins, sans-serif;
+}
+
+.header2 {
+  color: #686d76;
+}
+
+.hero {
+  margin-top: 80px;
+}
+
+@media (max-width: 767px) {
+  .hero {
+    margin-top: 70px;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 768.98px) {
+  .header1 {
+    font-size: 30px;
+  }
+}
+
+/* image width sizening in hero section */
+
+.con {
+  width: 800px;
+  position: relative;
+  padding: 40px;
+}
+
+@media (max-width: 600px) {
+  .img-fluid {
+    margin-top: 40px;
+  }
+}
+
+/* hero section ends */
+
+.button2 {
+  padding: 20px;
+}
+
+@media (min-width: 601px) and (max-width: 767.98px) {
+  #button-2 {
+    margin-bottom: 6vh; /* Apply bottom margin between 600px and 767px */
+  }
+}
+/* 
+.imaged {
+  height: 50px;
+} */
+
+.port {
+  margin-top: 100px;
+}
+
+@media (max-width: 480px) {
+  .port {
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .port {
+    margin-top: 60px;
+  }
+}
+
+.image-row {
+  margin-top: 40vh;
+}
