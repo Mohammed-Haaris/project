@@ -18,7 +18,7 @@ function Project() {
       projectName: "MR.Food's Food recipes",
       link: "https://food-recipe-github-io.vercel.app/",
       description:
-        "A collection of delicious food recipe, which is show and dsiplay the content using api and dyanmically display's a card",
+        "A collection of delicious food recipe, which is show and display the content using api and dynamically display's a card",
       image: "path/to/image.jpg",
     },
     {
