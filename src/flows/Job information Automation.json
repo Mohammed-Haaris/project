@@ -1,0 +1,123 @@
+{
+  "name": "Job information Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "=custom",
+              "cronExpression": "0 */2 * * *"
+            }
+          ]
+        }
+      },
+      "id": "1f2ae501-e816-4e0d-b1dc-c15948d76241",
+      "name": "Every Morning 9 AM",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        0
+      ],
+      "notesInFlow": true,
+      "notes": "\"parameters\": {\n  \"schedule\": {\n    \"hour\": [ \"0\", \"2\", \"4\", \"6\", \"8\", \"10\", \"12\", \"14\", \"16\", \"18\", \"20\", \"22\" ],\n    \"minute\": [ \"0\" ]\n  }\n}\n"
+    },
+    {
+      "parameters": {
+        "url": "https://remoteok.com/api",
+        "options": {}
+      },
+      "id": "2c9bead8-9e63-43e3-9982-cd5b56968185",
+      "name": "Fetch Remote Jobs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return items[0].json.slice(1, 6).map(job => ({\n  json: {\n    company: job.company,\n    position: job.position,\n    url: job.url,\n    tags: job.tags.join(\", \")\n  }\n}));"
+      },
+      "id": "6fb8837e-89d4-4ab0-8e82-b1bf083391d4",
+      "name": "Filter & Format Jobs",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        140,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "1852026912",
+        "text": "=💼 {{$json.position}} at {{$json.company}}\nTags: {{$json.tags}}\n🔗 {{$json.url}}",
+        "additionalFields": {}
+      },
+      "id": "b5b1a0d5-21f1-42e8-ae09-5a87ecbe2f8b",
+      "name": "Send to Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        400,
+        80
+      ],
+      "webhookId": "1f9a67fe-c1da-44a0-a700-58e11278f88f",
+      "credentials": {
+        "telegramApi": {
+          "id": "009VVamecbTNo9d9",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Every Morning 9 AM": {
+      "main": [
+        [
+          {
+            "node": "Fetch Remote Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Remote Jobs": {
+      "main": [
+        [
+          {
+            "node": "Filter & Format Jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter & Format Jobs": {
+      "main": [
+        [
+          {
+            "node": "Send to Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "715a5aee-7215-4157-b740-601a92d7d6c3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "148b1eaeb999ce31f517b11d405a5abb8bb3e182dcf9ef59bd00c88f0f4e0df1"
+  },
+  "id": "T30FeKtXSKr7U69H",
+  "tags": []
+}

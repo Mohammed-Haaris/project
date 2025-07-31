@@ -4,145 +4,285 @@ import React from "react";
 import Fade from "react-awesome-reveal";
 import banner from "../assets/Gray White Minimalist Personal Profile Linkedin Banner.png";
 import ContactImage from "../assets/academy class.avif";
+import { useState, useEffect } from "react";
 
 function Career() {
+  const [activeSection, setActiveSection] = useState('current');
+  const [titleIndex, setTitleIndex] = useState(0);
+
+  const titles = [
+    "My Professional Journey",
+    "Career Growth Path",
+    "From Student to Developer"
+  ];
+
+  const careerData = {
+    current: {
+      title: "Current Position",
+      icon: "🚀",
+      color: "#667eea",
+      priority: true,
+      items: [
+        {
+          institution: "Mirobs Innovations PVT.LTD",
+          period: "MAY 2025 - Present",
+          location: "Cuddalore, Tamilnadu, India",
+          role: "Software Developer & AI Automation Engineer",
+          status: "Currently Working",
+          description: "Leading software development initiatives and implementing AI automation solutions using cutting-edge technologies. Specializing in MERN stack development and n8n workflow automation to create intelligent business solutions.",
+          highlights: ["MERN Stack", "AI Automation", "n8n Workflows", "Full Stack Development", "API Integration", "Business Process Automation"],
+          achievements: ["Leading Development Projects", "AI Workflow Implementation", "Team Collaboration", "Client Solutions"]
+        }
+      ]
+    },
+    education: {
+      title: "Education",
+      icon: "🎓",
+      color: "#764ba2",
+      items: [
+        {
+          institution: "Annai Teresa College of Engineering",
+          period: "2021 - 2025",
+          location: "Thirunavalur, Kallakurichi, Tamilnadu, India",
+          degree: "Bachelor of Computer Science and Engineering",
+          status: "Completed",
+          description: "Successfully completed my degree in Computer Science and Engineering, which has provided me with a strong foundation in software development, problem-solving, and technical skills essential for the tech industry.",
+          highlights: ["Computer Science", "Engineering", "Software Development", "Problem Solving", "Technical Foundation"]
+        }
+      ]
+    },
+    training: {
+      title: "Professional Training",
+      icon: "⚡",
+      color: "#FF6B6B",
+      items: [
+        {
+          institution: "NextGen Solutions",
+          period: "2024",
+          location: "Cuddalore, Tamilnadu, India",
+          role: "Full Stack Developer Training",
+          description: "Comprehensive training program where I mastered various technologies including PHP, MySQL, and the MERN stack, solidifying my technical foundation.",
+          highlights: ["PHP", "MySQL", "MERN Stack", "Full Stack Development"]
+        }
+      ]
+    },
+    internships: {
+      title: "Internships",
+      icon: "💼",
+      color: "#47A248",
+      items: [
+        {
+          institution: "VEI Technologies",
+          period: "June - July 2024",
+          role: "Full Stack Developer Intern",
+          mentor: "Ezhilavan",
+          description: "Successfully completed internship working on real-world significant projects. Contributed to backend systems using Node.js and MySQL, creating RESTful APIs and ensuring seamless server-frontend interaction.",
+          highlights: ["Node.js", "MySQL", "RESTful APIs", "Backend Development"],
+          projects: ["Backend Systems", "Database Integration", "API Development"]
+        },
+        {
+          institution: "COD-TECH IT Solutions",
+          period: "September - October 2024",
+          role: "Front-End Web Developer Intern",
+          mentor: "Muzammil",
+          description: "Worked on two significant projects: a To-Do List application with user authentication and a Dynamic Food Recipe website. Strengthened expertise in HTML, CSS, and JavaScript.",
+          highlights: ["HTML", "CSS", "JavaScript", "Frontend Development"],
+          projects: ["To-Do List App", "Food Recipe Website"]
+        }
+      ]
+    }
+  };
+
+  // Animated title cycling
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTitleIndex((prev) => (prev + 1) % titles.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
-      <div className="container cont">
-        <section>
-          <Fade bottom>
-            <h1 className="pb-3 header1">Career Objectives</h1>
-          </Fade>
-        </section>
-        <figure className="pt-3">
-          <Fade right>
-            <img src={ContactImage} alt="academy" className="img-fluid ui" />
-          </Fade>
-        </figure>
-        <section className="sec">
-          <Fade bottom>
-            <h1>Annai Teresa College of Engineering</h1>
-            <p className="mt-2">
-              =&gt; currently I'm Pursuing my degree as a Bachelor of
-              <strong> Computer Science and Engineering,</strong> which is to
-              helping us to being maturity in professional development and
-              helping to make myself and helps to learn the pathway to success.
-              from (2021-2025) which it is located in
-              <strong> Thirunavalur, Kallakurichi, Tamilnadu, India</strong>
-            </p>
-          </Fade>
-        </section>
-        <section className="sec">
-          <Fade bottom>
-            <h1>NextGen Solutions</h1>
-            <p className="mt-2">
-              =&gt; Currently Getting trained as a Full Stack Developer, by
-              <strong> NextGen Solutions,</strong> My technical foundation has
-              been solidified through comprehensive training at Next Gen
-              Solutions,
-            </p>
-            <p>
-              =&gt; where I mastered a variety of technologies including PHP,
-              MySQL, and the MERN stack. which it is located in
-              <strong> Cuddalore, Tamilnadu, India</strong>
-            </p>
-          </Fade>
-        </section>
-        <section className="sec mb-2">
-          <Fade bottom>
-            <h1 className="header1">Internships</h1>
-          </Fade>
-        </section>
-        <section>
-          <Fade top>
-            <h3>VEI Technologies</h3>
-          </Fade>
-          <Fade top></Fade>
-          <p className="mt-2">
-            =&gt; I were succesfully completed my internship at
-            <strong> VEI Technologies</strong> from June to July 2024, where I
-            gained valuable experience as a Full Stack Developer.
-          </p>
-          <Fade bottom>
-            <p>
-              =&gt; Under the mentorship of Ezhilavan, I worked on real world
-              significant projects.
-            </p>
-            <p>
-              =&gt; As a Full Stack Development Intern at Company Name, I had
-              the opportunity to work on both front-end and back-end projects,
-              contributing to the development of dynamic, responsive, and
-              user-friendly applications.
-            </p>
-            <p>
-              =&gt; During this internship, I contributed to the development of
-              backend systems using Node.js and MySQL.
-            </p>
-            <p>
-              =&gt; My primary role involved creating RESTful APIs to handle
-              user data, integrating databases, and ensuring seamless
-              interaction between the server and frontend.
-            </p>
-          </Fade>
-        </section>
-        <section className="mt-5">
-          <Fade bottom>
-            <h3>COD-TECH IT Solutions</h3>
-            <p className="mt-2">
-              =&gt; I were successfully completed my internship at
-              <strong> Cod Tech IT Solution </strong>
-              from September to October 2024, where I gained valuable experience
-              as a Front-End Web Developer.
-              <p className="mt-2">
-                =&gt; Under the mentorship of Muzammil, I worked on two
-                significant projects.
-              </p>
-              <ol>
-                <li> To-Do List application</li>
-                <li> Dynamic Food Recipe website</li>
-              </ol>
-              <p>
-                =&gt; The To-Do List app featured task management with
-                enhancements like user authentication and local storage
-                integration, making it an effective task organizer.
-              </p>
-              <p>
-                =&gt; The Food Recipe website showcased various recipes with
-                detailed ingredients and cooking instructions, providing a
-                user-friendly browsing experience.
-              </p>
-              <p>
-                =&gt; This internship strengthened my expertise in HTML, CSS,
-                and JavaScript, deepened my understanding of web development
-                practices, and enhanced my ability to create interactive and
-                functional web applications.
-              </p>
-              <p>
-                =&gt; The skills and mentorship I received at Cod Tech IT
-                Solutions have greatly contributed to my growth as a developer."
-              </p>
-            </p>
-            <p>
-              =&gt; I am enthusiastic about continuous learning and growth, and
-              I am dedicated to honing my expertise in the ever-evolving tech
-              landscape.
-            </p>
-          </Fade>
-        </section>
+      {/* Enhanced Hero Section */}
+      <div className="container-fluid career-hero py-5 mt-5 mb-5">
+        <div className="container">
+          <div className="row justify-content-center text-center">
+            <div className="col-12 col-lg-8">
+              <Fade bottom>
+                <div className="career-hero-badge mb-3">
+                  <span className="career-badge-text">🎯 Professional Journey</span>
+                </div>
+                
+                <h1 className="career-title mb-3">
+                  {titles[titleIndex]}
+                </h1>
+                
+                <p className="career-subtitle mb-4">
+                  From Education to Professional Excellence
+                </p>
+              </Fade>
+              
+              {/* Enhanced Career Description */}
+              <Fade bottom delay={200}>
+                <div className="career-description mb-4">
+                  <p className="fs-5 lh-base">
+                    My journey from <strong className="highlight-text">Computer Science student</strong> to <strong className="highlight-text">Software Developer & AI Automation Engineer</strong> at <strong className="highlight-text">Mirobs Innovations</strong> has been driven by continuous learning and hands-on experience. Through education, training, and internships, I've built a strong foundation in modern web technologies and AI automation.
+                  </p>
+                </div>
+              </Fade>
+
+              {/* Enhanced Career Navigation */}
+              <Fade bottom delay={300}>
+                <div className="career-navigation mb-4">
+                  <div className="row justify-content-center g-2">
+                    {Object.entries(careerData).map(([key, data]) => (
+                      <div key={key} className={`${data.priority ? 'col-6 col-md-3' : 'col-6 col-md-3'} mb-2`}>
+                        <button
+                          className={`career-nav-btn ${activeSection === key ? 'active' : ''} ${data.priority ? 'priority-career' : ''} w-100 p-3 rounded-3 border-0 transition-all position-relative overflow-hidden h-100 d-flex flex-column justify-content-center`}
+                          onClick={() => setActiveSection(key)}
+                          style={{ '--career-color': data.color }}
+                        >
+                          <div className="career-nav-icon mb-2 fs-2">{data.icon}</div>
+                          <div className="career-nav-title fs-7 fw-semibold">{data.title}</div>
+                          {data.priority && (
+                            <div className="career-priority-star">
+                              <span>⭐</span>
+                            </div>
+                          )}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Fade>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="container mt-5 mb-5">
-        <Fade bottom>
-          <h1 className="header1">Conclusion</h1>
-          <p className="mt-3">
-            =&gt; My goal is to embrace new challenges, collaborate with
-            forward-thinking teams, and drive successful outcomes while
-            advancing my career as a full stack developer. With a strong work
-            ethic and a proactive approach to professional development, I am
-            poised to make a meaningful impact and achieve excellence in the
-            tech industry.
-          </p>
-          <img src={banner} className="img-fluid mt-3 mb-3" alt="ads" />
-        </Fade>
+
+      {/* Enhanced Career Content Section */}
+      <div className="container-fluid career-content py-4">
+        <div className="container">
+          <Fade bottom delay={400}>
+            <div className="row justify-content-center">
+              <div className="col-12">
+                <div className="section-header text-center mb-4">
+                  <div className="section-badge mb-2">
+                    <span className="section-badge-text">{careerData[activeSection].icon} {careerData[activeSection].title}</span>
+                  </div>
+                  <h2 className="section-title mb-2">{careerData[activeSection].title} Experience</h2>
+                  <p className="section-subtitle">My journey in {careerData[activeSection].title.toLowerCase()}</p>
+                </div>
+                
+                <div className="career-timeline">
+                  {careerData[activeSection].items.map((item, index) => (
+                    <Fade bottom delay={500 + index * 200} key={index}>
+                      <div className={`career-card ${careerData[activeSection].priority ? 'priority-career-card' : ''}`}>
+                        <div className="career-card-header">
+                          <div className="career-logo-container">
+                            <div className="career-logo-icon" style={{ backgroundColor: careerData[activeSection].color }}>
+                              {careerData[activeSection].icon}
+                            </div>
+                            <div className="career-logo-glow" style={{ backgroundColor: careerData[activeSection].color }}></div>
+                          </div>
+                          <div className="career-header-content">
+                            <div className="career-institution-row">
+                              <h3 className="career-institution">{item.institution}</h3>
+                              {item.status && (
+                                <span className="career-status-badge">{item.status}</span>
+                              )}
+                            </div>
+                            <p className="career-period">{item.period}</p>
+                            <p className="career-location">{item.location}</p>
+                            {item.role && <p className="career-role">{item.role}</p>}
+                            {item.degree && <p className="career-degree">{item.degree}</p>}
+                          </div>
+                        </div>
+                        
+                        <div className="career-card-body">
+                          <div className="career-description-text">
+                            <p>{item.description}</p>
+                          </div>
+                          
+                          {item.highlights && (
+                            <div className="career-highlights">
+                              <h5 className="career-highlights-title">Key Skills & Technologies</h5>
+                              <div className="career-highlights-grid">
+                                {item.highlights.map((highlight, idx) => (
+                                  <div key={idx} className="career-highlight-item">
+                                    <span className="career-highlight-icon">⚡</span>
+                                    <span className="career-highlight-text">{highlight}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {item.achievements && (
+                            <div className="career-achievements">
+                              <h5 className="career-achievements-title">Key Achievements</h5>
+                              <div className="career-achievements-list">
+                                {item.achievements.map((achievement, idx) => (
+                                  <div key={idx} className="career-achievement-item">
+                                    <span className="career-achievement-icon">🏆</span>
+                                    <span className="career-achievement-text">{achievement}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {item.projects && (
+                            <div className="career-projects">
+                              <h5 className="career-projects-title">Projects & Achievements</h5>
+                              <div className="career-projects-list">
+                                {item.projects.map((project, idx) => (
+                                  <div key={idx} className="career-project-item">
+                                    <span className="career-project-icon">🎯</span>
+                                    <span className="career-project-text">{project}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {item.mentor && (
+                            <div className="career-mentor">
+                              <p className="career-mentor-text">
+                                <strong>Mentor:</strong> {item.mentor}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </Fade>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Fade>
+        </div>
+      </div>
+
+      {/* Enhanced Conclusion Section */}
+      <div className="container-fluid career-conclusion py-4">
+        <div className="container">
+          <Fade bottom delay={600}>
+            <div className="row justify-content-center text-center">
+              <div className="col-12 col-lg-8">
+                <div className="conclusion-content">
+                  <h2 className="conclusion-title mb-3">Looking Forward</h2>
+                  <p className="conclusion-description mb-4">
+                    Currently working as a Software Developer & AI Automation Engineer at Mirobs Innovations, I'm passionate about creating innovative solutions and driving digital transformation. My goal is to continue embracing new challenges, collaborate with forward-thinking teams, and drive successful outcomes while advancing my career in the tech industry.
+                  </p>
+                  <div className="conclusion-image">
+                    <img src={banner} className="img-fluid rounded-3" alt="Career Banner" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Fade>
+        </div>
       </div>
     </>
   );

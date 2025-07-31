@@ -1,0 +1,256 @@
+{
+  "name": "AI Real Estate Agent - Telegram",
+  "nodes": [
+    {
+      "id": "e9cc2d07-550e-4646-8ce0-c53b50c8c36d",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-telegram",
+        "options": {}
+      }
+    },
+    {
+      "id": "ebcd9fa6-2aa5-4bd6-b79e-974dd4344d66",
+      "name": "LeadData",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Parse incoming form data\nconst data = $input.first().json.body || $input.first().json;\nreturn [{\n  json: {\n    name: data.name,\n    phone: data.phone || data.whatsapp || \"\",\n    email: data.email || \"\",\n    budget: data.budget || \"\",\n    summary: data.summary || data.message || \"\"\n  }\n}];\n"
+      }
+    },
+    {
+      "id": "b6243f49-1eb5-4b56-892a-55bd90b64ea5",
+      "name": "AI Greeting Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        760,
+        300
+      ],
+      "parameters": {
+        "promptType": "define",
+        "text": "=Hi {{$json.name}}, I'm Jessica. As we discussed, here are some luxury villas in Marbella in your budget of {{$json.budget}}. Let me know what you think!"
+      }
+    },
+    {
+      "id": "45be7cae-6497-4eff-8020-dec73fe1b63e",
+      "name": "Format Telegram Greeting",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Build Telegram sendMessage payload\nconst msg = $input.first().json;\nreturn [{\n  json: {\n    chat_id: msg.phone, // assuming phone==chat_id (store real chat_id in production)\n    text: msg.output || msg\n  }\n}];\n"
+      }
+    },
+    {
+      "id": "2192e107-e0c0-4664-af2f-eec91bde8751",
+      "name": "Send Telegram Greeting",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot<YOUR_BOT_TOKEN>/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}"
+      }
+    },
+    {
+      "id": "8c291e94-871f-42f3-94dd-6d9a638c8c99",
+      "name": "Format domain",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Build Odoo domain array\nconst lead = $('LeadData').first().json;\nconst budget = parseFloat(String(lead.budget).replace(/[^\\d.]/g,'')) || 1000000;\nreturn [{\n  json: {\n    domain: [\n      [\"type_id\",\"=\",156],\n      [\"name\",\"ilike\",\"marbella\"],\n      [\"list_price\",\"<=\", budget]\n    ],\n    chat_id: lead.phone\n  }\n}];\n"
+      }
+    },
+    {
+      "id": "8bf3b4d8-423a-481a-b6b2-7e699323441f",
+      "name": "Fetch property",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1880,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_ODOO_URL/jsonrpc",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"jsonrpc\":\"2.0\",\n  \"method\":\"call\",\n  \"params\":{\n    \"model\":\"property.property\",\n    \"method\":\"search_read\",\n    \"args\":[ [ [\"type_id\", \"=\", 156] ] ],\n    \"kwargs\":{\n      \"fields\":[\"id\",\"name\",\"list_price\",\"bedrooms\",\"bathrooms\",\"main_img_url\"],\n      \"limit\":3\n    }\n  },\n  \"id\":1\n}"
+      }
+    },
+    {
+      "id": "3bcbf447-1f2e-4b87-a753-2e253f5d87d9",
+      "name": "Format Telegram MediaGroup",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Turn Odoo result into Telegram media group\nconst records = $input.first().json.result || [];\nconst media = records.map(r => ({\n  type: \"photo\",\n  media: r.main_img_url || \"https://via.placeholder.com/600\",\n  caption: `${r.name} - \u20ac${r.list_price}`\n}));\nreturn [{\n  json: {\n    chat_id: $('LeadData').first().json.phone,\n    media\n  }\n}];\n"
+      }
+    },
+    {
+      "id": "fbb3dc4f-f3a3-4a53-9e22-53130ce64982",
+      "name": "Send Telegram Properties",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2440,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot<YOUR_BOT_TOKEN>/sendMediaGroup",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}"
+      }
+    },
+    {
+      "id": "7b0991c4-d872-4093-9a7e-88550517c573",
+      "name": "Send Telegram Follow\u2011up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2720,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot<YOUR_BOT_TOKEN>/sendMessage",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"chat_id\":\"={{ $('LeadData').first().json.phone }}\",\n  \"text\":\"Did any of these villas catch your eye? Let me know!\"\n}"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "LeadData",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LeadData": {
+      "main": [
+        [
+          {
+            "node": "AI Greeting Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Greeting Agent": {
+      "main": [
+        [
+          {
+            "node": "Format Telegram Greeting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Telegram Greeting": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Greeting",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Telegram Greeting": {
+      "main": [
+        [
+          {
+            "node": "Format domain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format domain": {
+      "main": [
+        [
+          {
+            "node": "Fetch property",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch property": {
+      "main": [
+        [
+          {
+            "node": "Format Telegram MediaGroup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Telegram MediaGroup": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Properties",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Telegram Properties": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Follow\u2011up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false
+}

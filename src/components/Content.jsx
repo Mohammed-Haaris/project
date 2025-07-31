@@ -1,139 +1,156 @@
 /** @format */
 import brand from "../assets/circle2.png";
-import brand1 from "../assets/haaris (1).jpg";
+import brand1 from "../assets/Haarisnew.jpg";
 import Fade from "react-awesome-reveal";
 import "./Content.css";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import React from "react";
 
 function Content() {
   const navigateContact = useNavigate();
+  const [isHovered, setIsHovered] = useState(false);
+  const [activeSkill, setActiveSkill] = useState(0);
+  const [roleIndex, setRoleIndex] = useState(0);
+  const roles = [
+    "Software Developer",
+    "AI Automation Engineer"
+  ];
+
+  // Cycle through roles every 2.5 seconds
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setRoleIndex((prev) => (prev + 1) % roles.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleClick = () => {
     navigateContact("/contact");
   };
 
+  const skills = [
+    { name: "React.js", icon: "⚛️" },
+    { name: "Node.js", icon: "🟢" },
+    { name: "MongoDB", icon: "🍃" },
+    { name: "AI Automation", icon: "🤖" },
+    { name: "JavaScript", icon: "💛" },
+  ];
+
+  const achievements = [
+    { number: "20+", label: "Projects Built" },
+    { number: "1", label: "Years Experience" },
+    { number: "100%", label: "Client Satisfaction" },
+    { number:"100%", label:"Job Satisfaction"}
+  ];
+
   return (
     <>
-      <div className="container hero" id="hero">
-        <div className="row">
-          <div className="col-12 col-lg-6 col-md-6 align-self-center">
+      {/* Hero Section */}
+      <div className="container hero py-5 mb-5" id="hero">
+        <div className="row align-items-center flex-column-reverse flex-lg-row">
+          <div className="col-12 col-lg-6 d-flex flex-column justify-content-center align-items-center align-items-lg-start text-center text-lg-start mb-4 mb-lg-0">
             <Fade top>
-              <h1 className="header1">Mohammed Haaris</h1>
-            </Fade>
-            <Fade left>
-              <h2 className="mt-2 header2">React JS Developer</h2>
-            </Fade>
-            <Fade bottom>
-              <h5 className="header3 pt-3">
-                An Aspiring & Passionate Front End Developer with a strong
-                foundation in React.js with hands-on experience in building
-                responsive and dynamic web applications.
-              </h5>
-            </Fade>
-            <Fade>
-              <div className="mt-4">
-                <button
-                  type="button"
-                  className="navbar-btn btn btn-success button2"
-                  style={{ fontFamily: "poppins" }}
-                  id="button-2"
-                  onClick={handleClick}
-                >
-                  💬 Need Help? Let's Talk!
-                </button>
+              <div className="hero-content w-100">
+                <h1 className="header1 gradient-text mb-2 fs-1 fs-md-1 fs-lg-1 lh-1 text-center text-lg-start">Mohammed Haaris</h1>
+                <div className="typing-container mb-3">
+                  <h2 className="mt-2 header2 fs-3 fs-md-2 lh-sm text-center text-lg-start">
+                    I'm a <span className="typing-text">{roles[roleIndex]}</span>
+                  </h2>
+                  <h3 className="header2 fs-3 md-2 lh-sm text-center text-lg-start">
+                    Mirobs Innovations PVT.LTD
+                  </h3>
+                </div>
+                <Fade bottom>
+                  <p className="hero-description mb-4 fs-5 lh-base text-center text-lg-start">
+                    Software Developer & AI Automation Engineer passionate about building digital experiences and smart solutions. Turning ideas into reality, one line of code at a time! 🚀
+                  </p>
+                </Fade>
+                <Fade>
+                  <div className="hero-buttons d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start w-100">
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-lg px-4 w-100 w-sm-auto"
+                      onClick={handleClick}
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
+                    >
+                      {isHovered ? "Let's Connect! 🚀" : "💬 Get In Touch"}
+                    </button>
+                    <button className="btn btn-outline-primary btn-lg px-4 mt-2 mt-sm-0 w-100 w-sm-auto">
+                      📁 View Projects
+                    </button>
+                  </div>
+                </Fade>
               </div>
             </Fade>
           </div>
 
-          <div className="col-12 col-lg-6 col-md-6">
-            <img src={brand} className="img-fluid" alt="image by freepik" />
-          </div>
-        </div>
-      </div>
-      <div className="container-fluid port">
-        <div className="container mt-5">
-          <div className="row">
-            <div className="col">
-              <Fade top>
-                <h1 className="header1 text-center">About Me</h1>
-              </Fade>
-            </div>
-          </div>
-          <div className="row image-row">
-            <div className="col-lg-6 col-md-12 p-2 align-self-center">
-              <Fade right>
-                <img
-                  src={brand1}
-                  className="img-fluid "
-                  style={{ width: "60vh" }}
-                  alt="haaaris image"
-                />
-              </Fade>
-            </div>
-            <div
-              className="col col-lg-6 col-md-12 mt-5 align-self-center"
-              style={{ fontSize: "20px" }}
-            >
-              <Fade bottom>
-                <p>
-                  Hi, I'm <strong>Mohammed Haaris</strong>, a passionate
-                  front-end developer with a strong foundation in React.js. I am
-                  currently pursuing my degree in Computer Science and
-                  Engineering, which has helped me develop a deep understanding
-                  of web development and programming concepts.
-                </p>
-                <p>
-                  My journey into tech began with a curiosity about how websites
-                  and applications work behind the scenes. This curiosity soon
-                  turned into a passion for creating interactive, user-friendly
-                  experiences. As I explored front-end development, I mastered
-                  technologies like HTML, CSS, JavaScript, and React.js.
-                </p>
-                <p>
-                  I have hands-on experience in building responsive and dynamic
-                  web applications, and I am always eager to learn new
-                  technologies and improve my skills. My goal is to become a
-                  versatile full-stack developer, capable of turning ideas into
-                  functional, scalable applications.
-                </p>
-                <p>
-                  I am driven by my love for problem-solving, continuous
-                  learning, and the impact technology can have on the world. I
-                  am excited to collaborate with like-minded individuals and
-                  contribute to innovative projects.
-                </p>
-              </Fade>
-            </div>
-            <div className="container mt-5 " style={{ fontSize: "20px" }}>
-              <div className="row">
-                <div className="col">
-                  <Fade bottom>
-                    <p>
-                      In addition to my technical skills, I have a keen interest
-                      in design and user experience. I believe that a great user
-                      interface is essential for creating successful
-                      applications. I enjoy experimenting with new design trends
-                      and incorporating them into my projects.
-                    </p>
-                    <p>
-                      Outside of coding, I love exploring new technologies,
-                      reading tech blogs, and participating in hackathons. These
-                      activities help me stay updated with the latest industry
-                      trends and provide opportunities to network with other
-                      professionals in the field.
-                    </p>
-                    <p>
-                      I am always open to new opportunities and collaborations.
-                      If you have a project in mind or just want to chat about
-                      technology, feel free to reach out to me. Let's create
-                      something amazing together!
-                    </p>
-                  </Fade>
+          <div className="col-12 col-lg-6 d-flex justify-content-center mb-4 mb-lg-0">
+      
+             <Fade left>
+                <div className="about-image-container about-image-mobile-fix d-flex justify-content-center mb-3">
+                  <img
+                    src={brand1}
+                    className="img-fluid about-image"
+                    style={{maxWidth: '320px', width: '100%'}}
+                    alt="Mohammed Haaris"
+                  />
+                  <div className="image-overlay"></div>
                 </div>
-              </div>
+              </Fade>
+          </div>
+        </div>
+      </div>
+         {/* About Section */}
+      <div className="container-fluid about-section py-5 mb-5">
+        <div className="container">
+          <div className="row align-items-center flex-column flex-lg-row">
+            <div className="col-12 col-lg-6 d-flex justify-content-center mb-4 mb-lg-0">
+              <Fade right>
+                <div className="hero-image-container w-100 d-flex justify-content-center">
+                  <img src={brand} className="img-fluid floating" style={{maxWidth: '350px', width: '100%'}} alt="Hero illustration" />
+                </div>
+              </Fade>
+            </div>
+            <div className="col-12 col-lg-6 d-flex flex-column align-items-center align-items-lg-start text-center text-lg-start">
+              <Fade right>
+                <div className="about-content w-100 mx-auto px-3 about-content-max">
+                  <h2 className="section-title mb-4 fs-3 text-center text-lg-start">About Me</h2>
+                  <p className="about-text mb-3 fs-6 text-start text-lg-start">
+                    Hi! 👋 I'm <strong>Mohammed Haaris</strong>, a Software Developer & AI Automation Engineer who loves building smart, scalable solutions.
+                  </p>
+                  <p className="about-text mb-3 fs-6 text-start text-lg-start">
+                    I enjoy solving real-world problems with code and automation. When I'm not coding, you'll find me exploring new tech, joining hackathons, or sharing knowledge with others.
+                  </p>
+                  {/* Skills Showcase */}
+                 
+                </div>
+              </Fade>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Stats Section */}
+      <div className="container-fluid stats-section py-4 mb-5">
+        <div className="container">
+          <div className="row text-center">
+            {achievements.map((achievement, index) => (
+              <div key={index} className="col-12 col-md-4 mb-4 mb-md-0 pb-4">
+                <Fade bottom delay={index * 200}>
+                  <div className="stat-card h-100 d-flex flex-column justify-content-center align-items-center">
+                    <h2 className="stat-number mb-1">{achievement.number}</h2>
+                    <p className="stat-label mb-0">{achievement.label}</p>
+                  </div>
+                </Fade>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+   
     </>
   );
 }

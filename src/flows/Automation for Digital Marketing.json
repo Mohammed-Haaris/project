@@ -1,0 +1,897 @@
+{
+  "name": "Automation for Digital Marketing",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Salon Form Sample",
+        "formDescription": "Appointment form for salon, Book here",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Customer Name",
+              "placeholder": "enter your name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Customer's Whatsapp Number",
+              "fieldType": "number",
+              "placeholder": "Enter your number (whatsapp)",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Preferred Date/Time",
+              "fieldType": "date",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Customer Email",
+              "fieldType": "email",
+              "placeholder": "enter your email id",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Services needed",
+              "placeholder": "enter the service",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "How did you find us?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Instagram"
+                  },
+                  {
+                    "option": "Whats App"
+                  },
+                  {
+                    "option": "Referral"
+                  }
+                ]
+              },
+              "multiselect": true,
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -600,
+        220
+      ],
+      "id": "79e2293c-fbdf-4d00-8050-e2e05a7fbf35",
+      "name": "On form submission",
+      "webhookId": "5b7a3a9b-85f1-4398-b560-6c54237b8a7f"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an assistant at a salon.\n\nGenerate a polite and friendly reminder email to the customer using the following details:\n\n- Customer Name: {{ $json['Customer Name'] }}\n- Service Booked:{{ $json['Services needed'] }}\n- Appointment Date: {{ $json[\"Preferred Date/Time\"] }}\n\nThe email should:\n\n- Start with a warm greeting using their name\n- Clearly mention the service and the date\n- Encourage the customer to reply if they need to reschedule\n- End with a friendly tone signed by the salon team\n\nFormat the output like a professional email with proper paragraph spacing using two line breaks (\\n\\n) between paragraphs.\n\n\n\nAvoid being robotic. Be professional yet warm.\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -160,
+        120
+      ],
+      "id": "33841b35-7760-44de-b8ad-183a1d14c042",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        340
+      ],
+      "id": "0601f167-f4c2-4478-8621-1e38fa3676c7",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "4hMLDIVsKIuYxCSV",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Append row in sheet').item.json['Customer Email'] }}",
+        "subject": "=Reply for Booking {{ $('Append row in sheet').item.json['Services needed'] }} ",
+        "message": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        200,
+        220
+      ],
+      "id": "993a012d-b2de-4c19-a6a3-0b4b7118c90c",
+      "name": "Send a message",
+      "webhookId": "a5756af1-6666-4027-bea8-7a7f3c57de5c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CtVAIuW8IkSGB4EQ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "1852026912",
+        "text": "=\n🎉 New Salon Booking Received! 🎉\n\n👤 Name: {{ $json['👤 Name'] }}\n\n📞 Phone: {{ $json['📞 Phone'] }}\n\n📧 Email: {{ $json['📧 Email'] }}\n\n💇‍♀️ Service: {{ $json['💇‍♀️ Service'] }}\n\n📅 Booked On: {{ $json['📅 Booked On'] }}\n\nPlease follow up immediately. 💬\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        220
+      ],
+      "id": "4bb31ed6-55c4-4a54-9bc5-e70b5c1ee782",
+      "name": "Send a text message",
+      "webhookId": "183b66ea-b7f6-4720-b8f9-73098067afe8",
+      "credentials": {
+        "telegramApi": {
+          "id": "aIjKLXPLSTequzkr",
+          "name": "Telegram account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "03188571-772e-4c2a-8c55-3fa981b362f0",
+              "name": "=👤 Name",
+              "value": "={{ $('Append row in sheet').item.json['Customer Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "83c786c3-d8d1-4f3b-9423-afd57e99b35b",
+              "name": "=📞 Phone",
+              "value": "={{ $('Append row in sheet').item.json['Customer\\'s Whatsapp Number'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1a4a1dfe-f0f6-4ae9-8862-73c16793a97b",
+              "name": "=📧 Email",
+              "value": "={{ $('Append row in sheet').item.json['Customer Email'] }}",
+              "type": "string"
+            },
+            {
+              "id": "156dffa8-7a51-4548-9ba1-f2f56c96aa32",
+              "name": "=💇‍♀️ Service",
+              "value": "={{ $('Append row in sheet').item.json['Services needed'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d0b799ad-8b13-4b26-b8ab-b7662113f269",
+              "name": "📅 Booked On",
+              "value": "={{ $('Append row in sheet').item.json['Preferred Date/Time'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        420,
+        220
+      ],
+      "id": "57ee0745-3d3c-477a-9ba2-fa5839f4b6dd",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1UQCaHq1mqrnbw7zO0JUqDXu-scRYkQ6zsrGOM7JhvMo",
+          "mode": "list",
+          "cachedResultName": "salon CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UQCaHq1mqrnbw7zO0JUqDXu-scRYkQ6zsrGOM7JhvMo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UQCaHq1mqrnbw7zO0JUqDXu-scRYkQ6zsrGOM7JhvMo/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -380,
+        680
+      ],
+      "id": "071118e2-b6f1-4523-8893-68ba5a04d5ad",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "a8cse0FRBO2P0ybh",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1b4ca184-b8d2-4d03-9d32-1fda2c485354",
+              "leftValue": "={{ new Date($json[\"Preferred Date/Time\"]).toDateString() }}\n",
+              "rightValue": "={{ new Date(new Date().setDate(new Date().getDate() + 1)).toDateString() }}\n",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "bb814e7c-9e66-4b28-9a8e-c536556443e0",
+              "leftValue": "={{ $json[\"reminderSent\"] }}",
+              "rightValue": "yes",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        680
+      ],
+      "id": "2d1e66aa-69ba-4d94-9135-679526ce6bef",
+      "name": "If",
+      "alwaysOutputData": true,
+      "retryOnFail": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an assistant at a salon.\n\nGenerate a polite and friendly reminder email to the customer using the following details\n\n- Customer Name: {{ $('Get row(s) in sheet').item.json['Customer Name'] }}\n- Service Booked: {{ $('Get row(s) in sheet').item.json['Services needed'] }}\n- Appointment Date: {{ $json[\"Preferred Date/Time\"] }}\n\n\nThe email should:\n- Start with a warm greeting using their name\n- Clearly mention the service and the date\n- Encourage the customer to reply if they need to reschedule\n- End with a friendly tone signed by the salon team\n\nAvoid being too robotic. Keep it professional yet friendly.\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        60,
+        580
+      ],
+      "id": "38a7402f-92d0-4199-81af-96025a06bf59",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        140,
+        800
+      ],
+      "id": "d84a81ea-eca2-48e3-b002-14212351f4db",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "4hMLDIVsKIuYxCSV",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Get row(s) in sheet').item.json['Customer Email'] }}",
+        "subject": "=Reminder alert appointment for {{ $('Get row(s) in sheet').item.json['Services needed'] }}",
+        "emailType": "text",
+        "message": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        420,
+        680
+      ],
+      "id": "9ca0440f-700d-4648-933e-023576c0e78a",
+      "name": "Send a message1",
+      "webhookId": "74ba8df4-3675-4b65-9d14-664fe953f3d7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CtVAIuW8IkSGB4EQ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Booking form for salon \n",
+        "height": 560,
+        "width": 1820,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -840,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "8c5a2e98-dc17-4608-a088-d6aff9028e0f",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Reminder mail sent to customer before the appointment date ",
+        "height": 560,
+        "width": 1820,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -840,
+        380
+      ],
+      "typeVersion": 1,
+      "id": "302c03e3-c195-40be-a33e-33769753bc90",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1UQCaHq1mqrnbw7zO0JUqDXu-scRYkQ6zsrGOM7JhvMo",
+          "mode": "list",
+          "cachedResultName": "salon CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UQCaHq1mqrnbw7zO0JUqDXu-scRYkQ6zsrGOM7JhvMo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UQCaHq1mqrnbw7zO0JUqDXu-scRYkQ6zsrGOM7JhvMo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -380,
+        220
+      ],
+      "id": "81693221-8b78-4489-a068-79f35b3c2295",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "a8cse0FRBO2P0ybh",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -600,
+        680
+      ],
+      "id": "77e28a6a-0006-4e9c-a319-1a7827cb1133",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1UQCaHq1mqrnbw7zO0JUqDXu-scRYkQ6zsrGOM7JhvMo",
+          "mode": "list",
+          "cachedResultName": "salon CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UQCaHq1mqrnbw7zO0JUqDXu-scRYkQ6zsrGOM7JhvMo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UQCaHq1mqrnbw7zO0JUqDXu-scRYkQ6zsrGOM7JhvMo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Customer Email": "={{ $('Get row(s) in sheet').item.json['Customer Email'] }}",
+            "Customer Name": "={{ $('Get row(s) in sheet').item.json['Customer Name'] }}",
+            "Customer's Whatsapp Number": "={{ $('Get row(s) in sheet').item.json['Customer\\'s Whatsapp Number'] }}",
+            "Preferred Date/Time": "={{ $('Get row(s) in sheet').item.json['Preferred Date/Time'] }}",
+            "Services needed": "={{ $('Get row(s) in sheet').item.json['Services needed'] }}",
+            "How did you find us?": "={{ $('Get row(s) in sheet').item.json['How did you find us?'] }}",
+            "submittedAt": "={{ $('Get row(s) in sheet').item.json.submittedAt }}",
+            "formMode": "={{ $('Get row(s) in sheet').item.json.formMode }}",
+            "reminderSent": "Yes"
+          },
+          "matchingColumns": [
+            "Customer Email"
+          ],
+          "schema": [
+            {
+              "id": "Customer Name",
+              "displayName": "Customer Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Customer's Whatsapp Number",
+              "displayName": "Customer's Whatsapp Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Preferred Date/Time",
+              "displayName": "Preferred Date/Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Customer Email",
+              "displayName": "Customer Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Services needed",
+              "displayName": "Services needed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "How did you find us?",
+              "displayName": "How did you find us?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "submittedAt",
+              "displayName": "submittedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "formMode",
+              "displayName": "formMode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reminderSent",
+              "displayName": "reminderSent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        640,
+        680
+      ],
+      "id": "83b8aebb-d0ed-4180-b161-706645c41a95",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "a8cse0FRBO2P0ybh",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1UQCaHq1mqrnbw7zO0JUqDXu-scRYkQ6zsrGOM7JhvMo",
+          "mode": "list",
+          "cachedResultName": "salon CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UQCaHq1mqrnbw7zO0JUqDXu-scRYkQ6zsrGOM7JhvMo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UQCaHq1mqrnbw7zO0JUqDXu-scRYkQ6zsrGOM7JhvMo/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        -380,
+        1140
+      ],
+      "id": "67a70450-4183-4db5-819e-b9c199d1f6fa",
+      "name": "Store to Google Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "a8cse0FRBO2P0ybh",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "value1": "={{$json[\"Rating\"]}}",
+              "operation": "greaterThan",
+              "value2": 4
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        1140
+      ],
+      "id": "ce03206f-1bb7-47c9-9203-d887ffe1a0f9",
+      "name": "Rating > 4?"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{$json[\"Email\"]}}",
+        "subject": "We’d love your review, {{$json[\"Name\"]}}!",
+        "message": "Hi {{$json[\"Name\"]}},\n\nThanks for visiting us for {{$json[\"Service\"]}}. We're happy to know you had a great experience!\n\nWould you be kind enough to leave us a Google review?\n👉 https://g.page/r/YOUR-REVIEW-LINK\n\nWe appreciate your support!\n\n- Team Haaris Salon",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        60,
+        1040
+      ],
+      "id": "02c974a7-e810-4656-bdd3-6794e316a983",
+      "name": "Send Review Email",
+      "webhookId": "d3abda30-272c-4dca-b4aa-defe7df4c759",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CtVAIuW8IkSGB4EQ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{$json[\"Email\"]}}",
+        "subject": "We're Sorry - Feedback Received",
+        "message": "Hi {{$json[\"Name\"]}},\n\nThank you for your feedback. We're sorry to hear you weren’t fully satisfied with the {{$json[\"Service\"]}}.\n\nWe'd love to improve – if you’d like to share more, please reply to this email.\n\nThank you for helping us grow.\n\n– Haaris Salon Support Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        60,
+        1240
+      ],
+      "id": "951bb026-dc2f-4c56-aa32-9108262c3377",
+      "name": "Send Apology Email",
+      "webhookId": "d44dd38f-4f9d-45e1-a6c6-e092a964c0b4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CtVAIuW8IkSGB4EQ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Review for gmail\n",
+        "height": 640,
+        "width": 1820
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -840,
+        940
+      ],
+      "typeVersion": 1,
+      "id": "2a5b06cd-14b6-41d1-8f51-8e59e6d9ad66",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "feedback-capture",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -600,
+        1140
+      ],
+      "id": "912697dc-5039-4e4a-8586-a3fbb8999ded",
+      "name": "Capture Feedback",
+      "webhookId": "0dfb1b2c-f1f8-407e-99be-77fe07b2c9b6"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store to Google Sheet": {
+      "main": [
+        [
+          {
+            "node": "Rating > 4?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rating > 4?": {
+      "main": [
+        [
+          {
+            "node": "Send Review Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Apology Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capture Feedback": {
+      "main": [
+        [
+          {
+            "node": "Store to Google Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "b2a70e35-51dc-4509-8d9f-b441526cbe2a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "148b1eaeb999ce31f517b11d405a5abb8bb3e182dcf9ef59bd00c88f0f4e0df1"
+  },
+  "id": "AaKEpcFa8ijcvXUM",
+  "tags": []
+}

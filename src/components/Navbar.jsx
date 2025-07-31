@@ -1,118 +1,123 @@
 /** @format */
 import Fade from "react-awesome-reveal";
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import Button from "./Button";
 
 function Navbar() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
+
+  const navItems = [
+    { path: "/", label: "About" },
+    { path: "/technologies", label: "Technologies" },
+    { path: "/career", label: "Pathway" },
+    { path: "/projects", label: "Projects" },
+    { path: "/contact", label: "Contact" }
+  ];
+
+  const socialLinks = [
+    { 
+      name: "LinkedIn", 
+      url: "https://linkedin.com/in/mohammedhaaris12"
+    },
+    { 
+      name: "GitHub", 
+      url: "https://github.com/Mohammed-Haaris/Mohammed-Haaris"
+    },
+    { 
+      name: "Email", 
+      url: "mailto:smhhaaris2020@gmail.com"
+    },
+    { 
+      name: "Instagram", 
+      url: "https://www.instagram.com/___mohammed__12_/"
+    },
+    { 
+      name: "WhatsApp", 
+      url: "https://wa.me/917904321745"
+    }
+  ];
+
   return (
-    <Fade bottom>
-      <nav className="navbar navbar-expand-lg p-3 sticky-top">
-        <div className="container-fluid">
+    <Fade top>
+      <nav className={`navbar navbar-expand-lg sticky-top transition-all ${isScrolled ? 'navbar-scrolled' : 'navbar-transparent'}`}>
+        <div className="container">
           <Link
-            className="navbar-brand text-white ps-2"
-            style={{ fontWeight: "bold" }}
+            className="navbar-brand d-flex align-items-center"
             to="/"
           >
-            WEB FUSION
+            <span className="brand-text">WEB FUSION</span>
           </Link>
+          
           <button
-            className="navbar-toggler"
+            className={`navbar-toggler ${isMobileMenuOpen ? 'active' : ''}`}
             type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNavDropdown"
-            aria-controls="navbarNavDropdown"
-            aria-expanded="false"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle navigation"
-            style={{ backgroundColor: "whitesmoke" }}
           >
-            <span
-              className="navbar-toggler-icon"
-              style={{ color: "whitesmoke" }}
-            />
+            <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarNavDropdown">
+          
+          <div className={`collapse navbar-collapse ${isMobileMenuOpen ? 'show' : ''}`} id="navbarNavDropdown">
             <ul className="navbar-nav me-auto">
-              <li className="nav-item nav-underline">
-                <Link className="nav-link text-white me-4" to="/">
-                  About
-                </Link>
-              </li>
-              <li className="nav-item nav-underline">
-                <Link className="nav-link text-white me-4" to="/technologies">
-                  Technologies
-                </Link>
-              </li>
-              <li className="nav-item nav-underline">
-                <Link className="nav-link text-white me-4" to="/career">
-                  Pathway
-                </Link>
-              </li>
-              <li className="nav-item nav-underline">
-                <Link className="nav-link text-white me-4" to="/projects">
-                  Projects
-                </Link>
-              </li>
-              <li className="nav-item nav-underline">
-                <Link className="nav-link text-white me-4" to="/contact">
-                  Contact
-                </Link>
-              </li>
-              <li className="nav-item dropdown nav-underline">
+              {navItems.map((item, index) => (
+                <li className="nav-item" key={index}>
+                  <Link 
+                    className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
+                    to={item.path}
+                  >
+                    <span className="nav-text">{item.label}</span>
+                    {location.pathname === item.path && (
+                      <div className="nav-indicator"></div>
+                    )}
+                  </Link>
+                </li>
+              ))}
+              
+              <li className="nav-item dropdown">
                 <a
-                  className="nav-link dropdown-toggle text-white pe-3"
+                  className="nav-link dropdown-toggle"
                   href="#"
                   role="button"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Social Media
+                  <span className="nav-text">Social Media</span>
                 </a>
-                <ul className="dropdown-menu p-3">
-                  <li>
-                    <a
-                      className="dropdown-item p-2"
-                      href="https://linkedin.com/in/mohammedhaaris12"
-                    >
-                      Linked IN
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className="dropdown-item p-2"
-                      href="https://github.com/Mohammed-Haaris/Mohammed-Haaris"
-                    >
-                      GITHUB
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className="dropdown-item p-2"
-                      href="mailto:smhhaaris2020@gmail.com"
-                    >
-                      Mail
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className="dropdown-item p-2"
-                      href="https://www.instagram.com/___mohammed__12_/"
-                    >
-                      Instagram
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className="dropdown-item p-2"
-                      href="https://wa.me/917904321745"
-                    >
-                      What's App
-                    </a>
-                  </li>
+                <ul className="dropdown-menu">
+                  {socialLinks.map((social, index) => (
+                    <li key={index}>
+                      <a
+                        className="dropdown-item"
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <span className="social-text">{social.name}</span>
+                      </a>
+                    </li>
+                  ))}
                 </ul>
               </li>
             </ul>
-            <div className="mt-2">
+            
+            <div className="navbar-actions">
               <Button />
             </div>
           </div>

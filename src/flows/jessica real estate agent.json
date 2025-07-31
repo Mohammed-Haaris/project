@@ -1,0 +1,493 @@
+{
+  "name": "jessica real estate agent",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2220,
+        250
+      ],
+      "id": "a92e398e-2887-4273-b56b-4aef296b6649",
+      "name": "Telegram Trigger",
+      "webhookId": "5dc396dd-a49e-48e2-b626-85c37028e2f0",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZxeK16zH7M74XtrL",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a real estate assistant. Based on this search:\nType: {{ $json.type }}\nCity: {{ $json.city }}\nBudget: ₹{{ $json.budget }}\n\nShow top matching properties. Format each with:\n- Property Type\n- Neighborhood\n- City\n- Price\n- Size\n- Clickable URL\n\nIf more than 3 matches exist, show all of them.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -540,
+        0
+      ],
+      "id": "3815f1d1-2989-4c2e-a9ba-41f0ceb62238",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        220
+      ],
+      "id": "af87319c-b7e1-413c-9a3f-f377ec9a0489",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "4hMLDIVsKIuYxCSV",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node[\"Telegram Trigger\"].json.message.chat.id }}\n",
+        "text": "={{ $json.reply || $json.output }}\n",
+        "additionalFields": {
+          "parse_mode": "=HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -180,
+        100
+      ],
+      "id": "1471a79f-b52e-424e-b11f-4ea2513c8394",
+      "name": "Send a text message",
+      "webhookId": "13d529ab-f09d-417e-94c6-482dbe4244ef",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZxeK16zH7M74XtrL",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "=pixelnest:users:{{ $json.message.chat.id }}:history",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -2000,
+        250
+      ],
+      "id": "6b52dd26-3316-4202-95ba-d646c08e056a",
+      "name": "Redis",
+      "credentials": {
+        "redis": {
+          "id": "1nQhr8ss9X9SBnrH",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const history = $input.first().json || [];\nconst arr = Array.isArray(history) ? history : [history];\nconst safe = arr.map(e => {\n  if (typeof e === 'object') {\n    if (e.reply) return \"Jessica: \" + e.reply;\n    return JSON.stringify(e);\n  }\n  return String(e);\n});\nconst latest = $node[\"Telegram Trigger\"].json.message?.text || \"\";\nlet convo = safe.join('\\n');\nconvo += `\\nUser: ${latest}`;\nreturn [{ json: { conversation: convo.trim(), current: latest } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1780,
+        250
+      ],
+      "id": "11e40cea-bc1a-4735-9d16-7cdb03c3c31c",
+      "name": "Format conversation"
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "=pixelnest:users:{{$node[\"Telegram Trigger\"].json.message.chat.id}}:history",
+        "messageData": "=Jessica: {{ $json.reply || $node[\"AI Agent\"].json.output }}\n"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        40,
+        100
+      ],
+      "id": "33a80177-2940-40c5-8252-801b031d10f8",
+      "name": "Redis1",
+      "credentials": {
+        "redis": {
+          "id": "1nQhr8ss9X9SBnrH",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = $node[\"Format conversation\"].json.current || \"\";\n\n// Match multiple cities\nconst cityMatches = msg.match(/\\b(chennai|bangalore|coimbatore|madurai|mysore|trichy|agra|delhi|kakinada|hyderabad)\\b/gi);\nconst cityList = cityMatches ? [...new Set(cityMatches.map(c => c.toLowerCase()))] : [];\n\nconst typeMatch = msg.match(/\\b(1\\s*bhk|2\\s*bhk|3\\s*bhk|flat|villa|house)\\b/i);\nconst type = typeMatch ? typeMatch[0].replace(/\\s+/g, \"\").toLowerCase() : \"\";\n\nconst priceMatch = msg.match(/(?:₹|rs\\.?|inr)?\\s*(\\d+)\\s*(?:l|lakhs?)/i);\nconst budget = priceMatch ? Number(priceMatch[1]) * 100000 : null;\n\nreturn [{\n  json: {\n    type,\n    city: cityList,\n    budget\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1560,
+        250
+      ],
+      "id": "973260f7-f3c7-48ff-93fb-ca0a0e49802a",
+      "name": "Extract Filters"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2073dd41-da6d-4673-b23c-a537dbe7db59",
+              "leftValue": "={{$json.type}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "3a68a9ca-0212-4143-9e60-eff72ac81023",
+              "leftValue": "={{ Array.isArray($json.city) && $json.city.length > 0 }} ",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "43f13880-9135-45ee-ad0b-30038c69e72a",
+              "leftValue": "={{$json.budget}}",
+              "rightValue": "={{ 0 }}",
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1340,
+        250
+      ],
+      "id": "120b3720-0c06-4263-8147-ef740f7366fb",
+      "name": "has all filters"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "you name is jessica a real estate agent, you need to tell to the user which they can't find out their needs. you dont need to tell tha you're ai, talk like a human being and reply them with polietely \n\nyou need to ask the particular missing data from users like type,  budget, city. ",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -1120,
+        400
+      ],
+      "id": "a2ce3027-ef4a-486a-bb08-62bf95fc4e5a",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "=pixelnest:users:{{$node[\"Telegram Trigger\"].json.message.chat.id}}:history",
+        "messageData": "={{ $('AI Agent1').item.json.output }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -470,
+        400
+      ],
+      "id": "ea2107ee-8d8d-4bbc-8d82-c52bfbf4b397",
+      "name": "Redis2",
+      "credentials": {
+        "redis": {
+          "id": "1nQhr8ss9X9SBnrH",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "=1U7xkc6tZoDxPgvsb2iJcJCOGYnce8nJS5LgdzZW887I",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 612012661,
+          "mode": "list",
+          "cachedResultName": "real_estate_dataset",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1U7xkc6tZoDxPgvsb2iJcJCOGYnce8nJS5LgdzZW887I/edit#gid=612012661"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -1050,
+        100
+      ],
+      "id": "87eee1d4-cfae-47f0-89ef-a70833d5ae7f",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "a8cse0FRBO2P0ybh",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -760,
+        400
+      ],
+      "id": "caa983eb-4804-4ec8-9c10-44859aac7127",
+      "name": "Send a text message1",
+      "webhookId": "a560c0bb-73a1-45fb-934c-bb139e387ff1",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZxeK16zH7M74XtrL",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const { type, city, budget } = $node[\"Extract Filters\"].json;\n\n// Normalize helper\nconst normalize = (text) => (text || \"\").toLowerCase().replace(/\\s+/g, \"\");\n\n// 🆕 Make city work for both single and multiple\nconst cityList = Array.isArray(city) ? city.join(\", \") : city;\n\n// 🧠 Build search-friendly query for vector embedding\nconst query = `Looking for a ${type} in ${cityList} under ₹${budget}`;\n\n// ✅ Return formatted data\nreturn [{\n  json: {\n    query,\n    type,\n    city: cityList,\n    budget\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -760,
+        100
+      ],
+      "id": "d0191fe4-0d19-4e46-b6c2-ba5b88582d75",
+      "name": "code",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        620
+      ],
+      "id": "a3b01007-a6e0-47c9-8c5e-4f787d63c822",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "4hMLDIVsKIuYxCSV",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Redis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis": {
+      "main": [
+        [
+          {
+            "node": "Format conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format conversation": {
+      "main": [
+        [
+          {
+            "node": "Extract Filters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Filters": {
+      "main": [
+        [
+          {
+            "node": "has all filters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "has all filters": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message1": {
+      "main": [
+        [
+          {
+            "node": "Redis2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "code": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c94ecce0-3b4a-465c-872f-7c8283265132",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "148b1eaeb999ce31f517b11d405a5abb8bb3e182dcf9ef59bd00c88f0f4e0df1"
+  },
+  "id": "ytqX2HLNaXTkYG00",
+  "tags": []
+}

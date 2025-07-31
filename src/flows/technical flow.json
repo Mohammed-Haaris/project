@@ -1,0 +1,787 @@
+{
+  "name": "technical flow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -832,
+        -176
+      ],
+      "id": "344ef7cc-4396-4dc9-970c-dc9b415475f5",
+      "name": "Telegram Trigger",
+      "webhookId": "2148a70c-55ff-44f0-b66e-5a1b709925cc",
+      "credentials": {
+        "telegramApi": {
+          "id": "2Xv5JT7tH2zzDhr3",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "message": "Hi! Welcome to our service bot.\n\nWe provide the following services:\n✅ MEP (Mechanical, Electrical & Plumbing) Technical service\n✅ AC Technical service\n\nplease fill up this form",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name ",
+              "placeholder": "enter your name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Phone number",
+              "fieldType": "number",
+              "placeholder": "enter your phone number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email id",
+              "fieldType": "email",
+              "placeholder": "enter your email id",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Service needed",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "MEP service"
+                  },
+                  {
+                    "option": "AC Service"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Issues occured",
+              "fieldType": "textarea",
+              "placeholder": "Tell your issues here",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Address ",
+              "fieldType": "textarea",
+              "placeholder": "Enter your Exact location "
+            },
+            {
+              "fieldLabel": "Preferred Time",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Morning "
+                  },
+                  {
+                    "option": "Afternoon "
+                  },
+                  {
+                    "option": "Evening"
+                  }
+                ]
+              },
+              "multiselect": true,
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -608,
+        -176
+      ],
+      "id": "6c7ed1c4-8290-47ae-88ca-74801c1b791c",
+      "name": "Send message and wait for response",
+      "webhookId": "d922e0bd-4865-4db9-8792-0b6d8a80de5a",
+      "credentials": {
+        "telegramApi": {
+          "id": "2Xv5JT7tH2zzDhr3",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "91d4239c-6890-4795-b75f-822d2c26c1e5",
+              "name": "Name",
+              "value": "={{ $json.data[\"Name \"] }}",
+              "type": "string"
+            },
+            {
+              "id": "bde669ee-d3e8-4bf9-9f66-18bfb91cfa4d",
+              "name": "Phone Number",
+              "value": "={{ $json.data['Phone number'] }}",
+              "type": "string"
+            },
+            {
+              "id": "2d458a5a-4bc0-4e92-a18d-36ca63a62c65",
+              "name": "Email ID",
+              "value": "={{ $json.data[\"Email id\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "3a484c37-992c-4932-8fcc-9b2031593b65",
+              "name": "[\"Service needed\"]",
+              "value": "={{ $json.data[\"Service needed\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "5fcaabb5-9ffd-4077-9f03-e05a85b4b6f7",
+              "name": "[\"Issues occured\"]",
+              "value": "={{ $json.data[\"Issues occured\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "ec660569-e3d3-441e-bb7a-d74945fa59c7",
+              "name": "Address",
+              "value": "={{ $json.data['Address '] }}",
+              "type": "string"
+            },
+            {
+              "id": "6c3a85d9-8d1e-4561-8ab4-bfae78474004",
+              "name": "[\"Preferred Time\"]",
+              "value": "={{ $json.data[\"Preferred Time\"] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -384,
+        -176
+      ],
+      "id": "6e5c297b-62f6-40f2-9b9a-e8102154565b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        288,
+        -376
+      ],
+      "id": "20673068-11a3-4bd8-98a6-9d39f0b79b3e",
+      "name": "Wait",
+      "webhookId": "0d15b989-6128-4ebe-ba84-700049b04d2d"
+    },
+    {
+      "parameters": {
+        "sendTo": "smhhaaris2020@gmail.com",
+        "subject": "={{ $json.output }}",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1136,
+        24
+      ],
+      "id": "e35f52b4-f41d-4f7d-8886-61e6fa1d3ed4",
+      "name": "Send a message",
+      "webhookId": "2a1f64ee-c231-47a4-a9e7-f2b4e9e0bfe2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sNhqGzT9D3TG4V9m",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1XEBqXT-hwI4yVi5M46362x9-7twh001CmUV8l6Zojuw",
+          "mode": "list",
+          "cachedResultName": "Ac service issues",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XEBqXT-hwI4yVi5M46362x9-7twh001CmUV8l6Zojuw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XEBqXT-hwI4yVi5M46362x9-7twh001CmUV8l6Zojuw/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email ID",
+              "displayName": "Email ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Service needed",
+              "displayName": "Service needed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Issues occured",
+              "displayName": "Issues occured",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Address",
+              "displayName": "Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Preferred Time",
+              "displayName": "Preferred Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        64,
+        -376
+      ],
+      "id": "61aba69c-9aa4-420c-80a3-424e5c81f24f",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pFQ3KZwjpaFzhq4s",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7bf24a2a-85a5-4530-bf75-7f46dbe68aa0",
+              "leftValue": "={{ $json['Service needed'] }}",
+              "rightValue": "AC Service",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        -176
+      ],
+      "id": "3ae8b60b-0755-4fe7-9c86-1c12afdd8014",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Thank You {{ $json.Name }}.  \n\nYour requested service for {{ $json['Service needed'] }} informed to Particular skilled technicians.  \n\nOur technical Team will get back to you shortly as your preferred time.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        512,
+        -376
+      ],
+      "id": "cf2edfb3-67ff-4605-9d19-8452c60cd156",
+      "name": "Send a text message",
+      "webhookId": "790c1a2a-464d-4a35-bd8a-f3df069c5465",
+      "credentials": {
+        "telegramApi": {
+          "id": "2Xv5JT7tH2zzDhr3",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1tjVVvUOZV4N6hYdhLKy3DAoHfH7eieOwWZwevUWiyug",
+          "mode": "list",
+          "cachedResultName": "MEP services issues",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tjVVvUOZV4N6hYdhLKy3DAoHfH7eieOwWZwevUWiyug/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tjVVvUOZV4N6hYdhLKy3DAoHfH7eieOwWZwevUWiyug/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email ID",
+              "displayName": "Email ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Service needed",
+              "displayName": "Service needed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Issues occured",
+              "displayName": "Issues occured",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Preferred Time",
+              "displayName": "Preferred Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        64,
+        24
+      ],
+      "id": "0cd81f59-69fb-4195-a4e0-9e7fc109c01b",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pFQ3KZwjpaFzhq4s",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 7
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        288,
+        24
+      ],
+      "id": "5abf70ec-1d2b-48e2-895b-71c981494c92",
+      "name": "Wait1",
+      "webhookId": "42aaf09e-4fe7-4096-b0c2-d839bec57c02"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Thank You {{ $json.Name }}.\n\nYour requested service for {{ $json['Service needed'][0] }} informed to Particular skilled technicians.\n\nOur technical Team will get back to you shortly as your preferred time.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        512,
+        24
+      ],
+      "id": "8c83d3ae-fda8-41b8-be8d-33b549e3db47",
+      "name": "Send a text message1",
+      "webhookId": "b66ac287-eb65-49d7-bdb6-bdd5f13ef107",
+      "credentials": {
+        "telegramApi": {
+          "id": "2Xv5JT7tH2zzDhr3",
+          "name": "Telegram account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "haaris@mirobsinnovations.com",
+        "subject": "=New service requested - {{ $('Append row in sheet').item.json['Service needed'] }}",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1136,
+        -376
+      ],
+      "id": "bef38cf8-2081-4c8d-8990-5bb76f851874",
+      "name": "Send a message2",
+      "webhookId": "e99590fb-6411-46b4-a6b2-115cf1b45d62",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sNhqGzT9D3TG4V9m",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a helpful assistant. Generate a professional HTML email message for a technician based on the service request details submitted by a customer. The email should be structured, polite, and clearly communicate all important details.\n\nUse the following customer input fields:\n\n- Customer Name: {{ $(\"Append row in sheet\").item.json[\"Name\"] }}\n- Phone Number: {{ $(\"Append row in sheet\").item.json[\"Phone Number\"] }}\n- Service Type: {{ $(\"Append row in sheet\").item.json[\"Service needed\"] }}\n- Issue Description: {{ $(\"Append row in sheet\").item.json[\"Issues occured\"] }}\n- Address: {{ $(\"Append row in sheet\").item.json[\"Address\"] }}\n- Preferred Time: {{ $(\"Append row in sheet\").item.json[\"Preferred Time\"] }}\n- Date of Request: {{ $now }}\n\nYour goal is to write a neat, readable, and mobile-friendly HTML email with:\n\n- A professional greeting\n- Clearly structured layout (use a table or well-aligned sections)\n- Clean spacing and readable font sizes\n- Proper styling for mobile compatibility (like padding and font-size)\n- A polite closing message requesting timely attention\n\nOnly return **valid HTML content**, and do **not include any explanation or markdown**.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        736,
+        24
+      ],
+      "id": "a68c676e-eee0-4343-ab89-564940ad206b",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        832,
+        248
+      ],
+      "id": "0ad456eb-47bf-4ffa-9e82-28041031ef6a",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "9uHm3wQRiNMVJgEE",
+          "name": "Groq account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a helpful assistant. Generate a professional HTML email message for a technician based on the service request details submitted by a customer. The email should be structured, polite, and clearly communicate all important details.\n\nUse the following customer input fields:\n\n- Customer Name: {{ $(\"Append row in sheet\").item.json[\"Name\"] }}\n- Phone Number: {{ $(\"Append row in sheet\").item.json[\"Phone Number\"] }}\n- Service Type: {{ $(\"Append row in sheet\").item.json[\"Service needed\"] }}\n- Issue Description: {{ $(\"Append row in sheet\").item.json[\"Issues occured\"] }}\n- Address: {{ $(\"Append row in sheet\").item.json[\"Address\"] }}\n- Preferred Time: {{ $(\"Append row in sheet\").item.json[\"Preferred Time\"] }}\n- Date of Request: {{ $now }}\n\nYour goal is to write a neat, readable, and mobile-friendly HTML email with:\n\n- A professional greeting\n- Clearly structured layout (use a table or well-aligned sections)\n- Clean spacing and readable font sizes\n- Proper styling for mobile compatibility (like padding and font-size)\n- A polite closing message requesting timely attention\n\nOnly return **valid HTML content**, and do **not include any explanation or markdown**.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        736,
+        -480
+      ],
+      "id": "a650ff2a-c829-421c-aee2-9480ce96af4c",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        832,
+        -256
+      ],
+      "id": "8d37fc21-aa79-4e83-a8c9-02bf5cdbbb90",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "9uHm3wQRiNMVJgEE",
+          "name": "Groq account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "41b7bb65-3aa1-45ff-8769-d7ea6e63777d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0c1403980be7889c1202162db4938b834e8174661d663d8e245f4d0ef21b8706"
+  },
+  "id": "q1gQLeipXzpZb1VD",
+  "tags": []
+}
