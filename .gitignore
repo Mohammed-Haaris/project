@@ -23,4 +23,18 @@ dist-ssr
 *.sln
 *.sw?
 
+# Deployment
 .vercel
+
+# Python files (not needed for React deployment)
+*.py
+*.pyc
+__pycache__/
+requirements.txt
+*.md
+!README.md
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
