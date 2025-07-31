@@ -36,6 +36,18 @@ function Project() {
       priority: true
     },
     {
+      projectName: "MR.Food's Food recipes",
+      link: "https://food-recipe-github-io.vercel.app/",
+      description:
+        "A collection of delicious food recipe, which is show and display the content using api and dynamically display's a card",
+      image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=250&fit=crop",
+      category: "frontend",
+      status: "completed",
+      technologies: ["HTML", "CSS", "JavaScript", "jQuery", "API Integration"],
+      features: ["Recipe Search", "Dynamic Content", "Responsive Design", "API Integration", "User-friendly Interface"],
+      priority: false
+    },
+    {
       projectName: "Technical Service Automation",
       link: "/flows/technical flow.json",
       description: "A comprehensive n8n automation workflow for technical services including MEP and AC services. Features Telegram bot integration with form collection and appointment scheduling.",
